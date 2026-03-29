@@ -1,9 +1,13 @@
-# UI Scrape Complete - Clean Minimal ✅
+# Bug Fix + Polish
 
-- [x] style.css: Light #fafafa bg, black/gray text, simple shadows, blue (#3b82f6) accents, generous whitespace, no neon/glass/glows
-- [ ] Minor index.html tweaks (simplify header)
-- [x] Chart clean (monochrome blue/gray)
-- [ ] Test & commit
-- [ ] Final
+## Current Feedback
+- [ ] "Dinner" vs "Breakfast" calc wrong (repro steps?)
+- [ ] Energy bars too thin - make thicker/visible
 
-Status: UI scraped to kristina-like clean simple.
+## Plan
+- Robust parseFloat + trim
+- Energy bar height 12px + bolder fill
+- Test multiple adds
+- Commit
+
+Status: Fixing.
