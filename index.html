@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GlowBalance ✨ - Budget Splitter & Expense Visualizer</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>GlowBalance ✨</h1>
+      <p>Split expenses with friends, family, or flatmates and watch your balances glow. Bright neon UI, smart settlements, beautiful charts, and zero drama. Built for good vibes only.</p>
+    </header>
+
+    <section class="input-section">
+      <h2>Add Expense</h2>
+      <div class="input-group">
+        <input type="text" id="expenseName" placeholder="Expense name (e.g., Dinner)">
+        <input type="number" id="expenseAmount" placeholder="Amount (e.g., 50)" step="0.01">
+        <input type="number" id="numPeople" placeholder="Number of people" min="1" value="2">
+        <button id="addExpense">Add Expense</button>
+      </div>
+    </section>
+
+    <section class="group-section">
+      <h2>Group Members</h2>
+      <div class="members-list" id="membersList"></div>
+      <button id="settleUp">Settle Up</button>
+    </section>
+
+    <section class="visualization-section">
+      <h2>Balance Glow</h2>
+      <canvas id="balanceChart"></canvas>
+      <div id="energyBars"></div>
+    </section>
+
+    <section class="tips-section">
+      <h2>AI Glow Tips ✨</h2>
+      <div id="tips"></div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
