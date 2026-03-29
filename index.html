@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GlowBalance - Budget Splitter & Expense Visualizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+<header class="hero">
+      <button id="themeToggle" class="theme-toggle" title="Toggle theme">🌙</button>
+      <h1>GlowBalance</h1>
+      <p>Simple expense splitter and balance tracker.</p>
+    </header>
+
+    <main class="grid">
+      <section class="card input-section">
+        <h2>Add Expense</h2>
+        <div class="input-group">
+          <input type="text" id="expenseName" placeholder="e.g., Dinner out">
+          <input type="number" id="expenseAmount" placeholder="Amount" step="0.01" min="0">
+          <input type="number" id="numPeople" placeholder="# People" min="1" max="10" value="2">
+          <button id="addExpense">Add</button>
+        </div>
+      </section>
+
+      <section class="card group-section">
+        <h2>Balances</h2>
+        <div class="members-list" id="membersList"></div>
+        <button id="settleUp" class="btn-secondary">Settle Up</button>
+      </section>
+
+      <section class="card visualization-section full-span">
+        <h2>Balance Overview</h2>
+        <div class="chart-wrapper">
+          <canvas id="balanceChart"></canvas>
+        </div>
+        <div class="energy-bars" id="energyBars"></div>
+      </section>
+
+      <section class="card tips-section">
+        <h2>Insights</h2>
+        <div id="tips"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
