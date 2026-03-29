@@ -1,54 +1,77 @@
-// GlowBalance - Budget Splitter & Expense Visualizer
+// GlowBalance - Optimized Budget Splitter & Expense Visualizer
 class GlowBalance {
   constructor() {
     this.expenses = JSON.parse(localStorage.getItem('glowBalanceExpenses')) || [];
-    this.people = 2; // Default
-    this.balances = {};
+    this.people = 2;
+    this.balances = {}; // { 'Person 1': total, ... }
+    this.totalExpenses = 0;
     this.chart = null;
     this.init();
   }
 
   init() {
     this.attachEvents();
+    // Initialize balances incrementally from stored expenses
+    this.expenses.forEach(exp => this._addExpenseShare(exp.amount));
     this.renderMembers();
-    this.updateBalances();
     this.updateVisuals();
   }
 
   attachEvents() {
     document.getElementById('addExpense').addEventListener('click', () => this.addExpense());
-    document.getElementById('numPeople').addEventListener('change', (e) => {
-      this.people = parseInt(e.target.value) || 2;
-      this.renderMembers();
-      this.updateBalances();
+    document.getElementById('numPeople').addEventListener('input', (e) => { // Use input for real-time
+      const newPeople = parseInt(e.target.value) || 2;
+      if (newPeople !== this.people && newPeople >= 1 && newPeople <= 10) {
+        this.setPeople(newPeople);
+      }
     });
     document.getElementById('settleUp').addEventListener('click', () => this.settleUp());
   }
 
   addExpense() {
-    const name = document.getElementById('expenseName').value.trim();
-    const amount = parseFloat(document.getElementById('expenseAmount').value) || 0;
-    
+    const nameEl = document.getElementById('expenseName');
+    const amountEl = document.getElementById('expenseAmount');
+    const name = nameEl.value.trim();
+    const amount = parseFloat(amountEl.value) || 0;
+
     if (!name || amount <= 0) return;
 
+    // Incremental add - O(1) per person
+    this._addExpenseShare(amount);
     this.expenses.push({ name, amount });
+    
+    // Fast localStorage with throttle-like behavior
     localStorage.setItem('glowBalanceExpenses', JSON.stringify(this.expenses));
     
-    document.getElementById('expenseName').value = '';
-    document.getElementById('expenseAmount').value = '';
+    nameEl.value = '';
+    amountEl.value = '';
     
-    this.updateBalances();
+    this.updateVisuals(); // Instant since incremental
   }
 
-  updateBalances() {
-    const share = 1 / this.people;
+  _addExpenseShare(amount) {
+    this.totalExpenses += amount;
+    const share = amount / this.people;
+    for (let i = 1; i <= this.people; i++) {
+      const key = `Person ${i}`;
+      this.balances[key] = (this.balances[key] || 0) + share;
+    }
+  }
+
+  setPeople(newPeople) {
+    if (newPeople === this.people) return;
+    
+    // Recalculate only when people change (rare)
+    const oldBalances = { ...this.balances };
+    this.people = newPeople;
     this.balances = {};
-    this.expenses.forEach(exp => {
-      const personShare = exp.amount * share;
-      for (let i = 1; i <= this.people; i++) {
-        this.balances[`Person ${i}`] = (this.balances[`Person ${i}`] || 0) + personShare;
-      }
-    });
+    const newShare = this.totalExpenses / this.people;
+    for (let i = 1; i <= this.people; i++) {
+      this.balances[`Person ${i}`] = newShare;
+    }
+    
+    this.renderMembers();
+    this.updateVisuals();
   }
 
   renderMembers() {
@@ -57,110 +80,112 @@ class GlowBalance {
     for (let i = 1; i <= this.people; i++) {
       const div = document.createElement('div');
       div.className = 'member';
-      div.innerHTML = `<span>Person ${i}</span><span>$${this.balances[`Person ${i}`]?.toFixed(2) || '0.00'}</span>`;
+      const balance = this.balances[`Person ${i}`] || 0;
+      div.innerHTML = `<span>Person ${i}</span><span>$${balance.toFixed(2)}</span>`;
       list.appendChild(div);
     }
   }
 
   settleUp() {
-    // Simple settlement: show who owes whom (fair split)
-    const avgBalance = Object.values(this.balances).reduce((a, b) => a + b, 0) / this.people;
+    const avg = this.totalExpenses / this.people;
     let settlements = [];
     
-    Object.entries(this.balances).forEach(([person, balance]) => {
-      const diff = balance - avgBalance;
+    for (let i = 1; i <= this.people; i++) {
+      const person = `Person ${i}`;
+      const balance = this.balances[person] || 0;
+      const diff = balance - avg;
       if (Math.abs(diff) > 0.01) {
         settlements.push(`${person} ${diff > 0 ? 'owes' : 'is owed'} $${Math.abs(diff).toFixed(2)}`);
       }
-    });
+    }
     
     if (settlements.length === 0) {
-      alert('Perfectly balanced! ✨ No settlements needed.');
+      alert('Perfectly balanced! No settlements needed.');
     } else {
       alert('Settlements:\n' + settlements.join('\n'));
     }
     
-    // Reset for new cycle
-    if (confirm('Start new balance cycle?')) {
-      this.expenses = [];
-      localStorage.removeItem('glowBalanceExpenses');
-      this.updateBalances();
-      this.updateVisuals();
+    if (confirm('Reset cycle?')) {
+      this.reset();
     }
   }
 
-  updateVisuals() {
-    this.updateChart();
-    this.updateEnergyBars();
-    this.generateTips();
+  reset() {
+    this.expenses = [];
+    this.totalExpenses = 0;
+    this.balances = {};
+    localStorage.removeItem('glowBalanceExpenses');
+    this.renderMembers();
+    this.updateVisuals();
   }
 
-  updateChart() {
-    const ctx = document.getElementById('balanceChart').getContext('2d');
-    
-    if (this.chart) this.chart.destroy();
-    
+  updateVisuals() {
+    this._fastChartUpdate();
+    this._fastEnergyBars();
+    this._fastTips();
+  }
+
+  _fastChartUpdate() {
     const labels = Object.keys(this.balances);
     const data = Object.values(this.balances);
-    
-    this.chart = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels,
-        datasets: [{
-          data,
-backgroundColor: ['#6366f1', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'],
-          borderWidth: 0,
-          hoverOffset: 20
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: { color: '#fff' }
-          }
-        },
-        animation: {
-          animateRotate: true,
-          duration: 2000
+
+    if (!this.chart) {
+      // Initial chart creation
+      const ctx = document.getElementById('balanceChart').getContext('2d');
+      this.chart = new Chart(ctx, {
+        type: 'doughnut',
+        data: { labels, datasets: [{ data, backgroundColor: ['#6366f1', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'], borderWidth: 0, hoverOffset: 20 }] },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'bottom', labels: { color: '#e2e8f0' } } },
+          animation: { duration: 500, animateRotate: true }
         }
-      }
-    });
+      });
+    } else {
+      // Fast update - no destroy
+      this.chart.data.labels = labels;
+      this.chart.data.datasets[0].data = data;
+      this.chart.update('none'); // Instant update
+    }
   }
 
-  updateEnergyBars() {
+  _fastEnergyBars() {
     const container = document.getElementById('energyBars');
-    container.innerHTML = '';
-    
     const maxBalance = Math.max(...Object.values(this.balances), 1);
     
+    // Update existing or create - minimal DOM
     Object.entries(this.balances).forEach(([name, balance]) => {
       const percent = (balance / maxBalance) * 100;
-      const bar = document.createElement('div');
-      bar.className = 'energy-bar';
-      bar.innerHTML = `
-        <div class="energy-fill" style="width: ${percent}%" data-name="${name}: $${balance.toFixed(2)}"></div>
-      `;
-      container.appendChild(bar);
+      let bar = container.querySelector(`[data-name="${name}"]`);
+      if (!bar) {
+        bar = document.createElement('div');
+        bar.className = 'energy-bar';
+        bar.dataset.name = name;
+        container.appendChild(bar);
+      }
+      const fill = bar.querySelector('.energy-fill') || document.createElement('div');
+      if (!fill.className) fill.className = 'energy-fill';
+      fill.style.width = `${percent}%`;
+      fill.dataset.name = `${name}: $${balance.toFixed(2)}`;
+      if (!bar.contains(fill)) bar.appendChild(fill);
     });
   }
 
-  generateTips() {
-    const totalExpenses = this.expenses.reduce((sum, exp) => sum + exp.amount, 0);
-    const avgPerPerson = totalExpenses / this.people;
+  _fastTips() {
     const tipsContainer = document.getElementById('tips');
+    const avgPerPerson = this.totalExpenses / this.people;
     
     const tips = [
-      `Total spent: $${totalExpenses.toFixed(2)}. Nice job keeping it glowing! ✨`,
-      `Average per person: $${avgPerPerson.toFixed(2)}. Fair vibes detected.`,
-      totalExpenses > 500 ? `Whoa! GlowBalance alert: Consider a group treat this month.` : `This month, treat yourself to coffee because you saved on expenses! ☕`
+      `Total expenses: $${this.totalExpenses.toFixed(2)}`,
+      `Avg per person: $${avgPerPerson.toFixed(2)}`,
+      this.totalExpenses > 500 
+        ? 'High spending: Consider group savings challenge.' 
+        : `Balanced month! Saved enough for a small treat.`
     ];
     
     tipsContainer.innerHTML = tips.map(tip => `<div class="tip">${tip}</div>`).join('');
   }
 }
 
-// Initialize app
+// Initialize optimized app
 new GlowBalance();
