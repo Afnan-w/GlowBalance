@@ -3,43 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GlowBalance ✨ - Budget Splitter & Expense Visualizer</title>
+  <title>GlowBalance - Budget Splitter & Expense Visualizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1>GlowBalance ✨</h1>
-      <p>Split expenses with friends, family, or flatmates and watch your balances glow. Bright neon UI, smart settlements, beautiful charts, and zero drama. Built for good vibes only.</p>
+    <header class="hero">
+      <h1>GlowBalance</h1>
+      <p>Smart expense splitting and balance visualization for groups or solo. Clean insights, fair settlements.</p>
     </header>
 
-    <section class="input-section">
-      <h2>Add Expense</h2>
-      <div class="input-group">
-        <input type="text" id="expenseName" placeholder="Expense name (e.g., Dinner)">
-        <input type="number" id="expenseAmount" placeholder="Amount (e.g., 50)" step="0.01">
-        <input type="number" id="numPeople" placeholder="Number of people" min="1" value="2">
-        <button id="addExpense">Add Expense</button>
-      </div>
-    </section>
+    <main class="grid">
+      <section class="card input-section">
+        <h2>Add Expense</h2>
+        <div class="input-group">
+          <input type="text" id="expenseName" placeholder="e.g., Dinner out">
+          <input type="number" id="expenseAmount" placeholder="Amount" step="0.01" min="0">
+          <input type="number" id="numPeople" placeholder="# People" min="1" max="10" value="2">
+          <button id="addExpense">Add</button>
+        </div>
+      </section>
 
-    <section class="group-section">
-      <h2>Group Members</h2>
-      <div class="members-list" id="membersList"></div>
-      <button id="settleUp">Settle Up</button>
-    </section>
+      <section class="card group-section">
+        <h2>Balances</h2>
+        <div class="members-list" id="membersList"></div>
+        <button id="settleUp" class="btn-secondary">Settle Up</button>
+      </section>
 
-    <section class="visualization-section">
-      <h2>Balance Glow</h2>
-      <canvas id="balanceChart"></canvas>
-      <div id="energyBars"></div>
-    </section>
+      <section class="card visualization-section full-span">
+        <h2>Balance Overview</h2>
+        <div class="chart-wrapper">
+          <canvas id="balanceChart"></canvas>
+        </div>
+        <div class="energy-bars" id="energyBars"></div>
+      </section>
 
-    <section class="tips-section">
-      <h2>AI Glow Tips ✨</h2>
-      <div id="tips"></div>
-    </section>
+      <section class="card tips-section">
+        <h2>Insights</h2>
+        <div id="tips"></div>
+      </section>
+    </main>
   </div>
 
   <script src="script.js"></script>

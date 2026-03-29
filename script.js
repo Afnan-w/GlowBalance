@@ -109,7 +109,7 @@ class GlowBalance {
         labels,
         datasets: [{
           data,
-          backgroundColor: ['#ff00ff', '#00ffff', '#ffff00', '#ffaa00', '#00ff00'],
+backgroundColor: ['#6366f1', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'],
           borderWidth: 0,
           hoverOffset: 20
         }]
