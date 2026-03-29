@@ -37,7 +37,7 @@ No sign-up. No complexity. Just good vibes and fair splits.
 ## Quick Start (Local Development)
 
 ```bash
-git clone https://github.com/yourusername/glowbalance.git
+git clone https://github.com/Afnan-w/glowbalance.git
 cd glowbalance
 
 # Install dependencies
