@@ -4,8 +4,7 @@
 
 A beautiful, fun, and modern expense splitter & balance visualizer. Perfect for trips with friends, shared rent in Chattogram, family expenses, office lunches, or any group that wants to keep things fair without the headache.
 
-![GlowBalance Hero](https://via.placeholder.com/800x400/0a0a0a/22ff88?text=GlowBalance)  
-*(Replace with your actual screenshot later)*
+
 
 ### Why GlowBalance?
 - Bright neon design that actually feels rewarding to use
