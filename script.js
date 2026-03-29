@@ -70,29 +70,22 @@ class GlowBalance {
     };
     
     const searchInput = document.getElementById('expenseSearch');
+    const clearBtn = document.querySelector('.clear-search-btn');
     if (searchInput) {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'search-wrapper';
-      searchInput.parentNode.insertBefore(wrapper, searchInput);
-      wrapper.appendChild(searchInput);
-
-      const clearBtn = document.createElement('button');
-      clearBtn.className = 'clear-search-btn';
-      clearBtn.innerHTML = '✕';
-      clearBtn.type = 'button';
-      wrapper.appendChild(clearBtn);
-
       searchInput.oninput = (e) => {
         this.searchTerm = e.target.value.toLowerCase();
-        clearBtn.style.display = this.searchTerm ? 'flex' : 'none';
+        if (clearBtn) clearBtn.style.display = this.searchTerm ? 'flex' : 'none';
         this.renderExpenses();
       };
-
+    }
+    if (clearBtn) {
       clearBtn.onclick = () => {
-        searchInput.value = '';
-        this.searchTerm = '';
-        clearBtn.style.display = 'none';
-        searchInput.focus();
+        if (searchInput) {
+          searchInput.value = '';
+          this.searchTerm = '';
+          clearBtn.style.display = 'none';
+          searchInput.focus();
+        }
         this.renderExpenses();
       };
     }
@@ -124,6 +117,7 @@ class GlowBalance {
     localStorage.setItem('glowBalanceExpenses', JSON.stringify(this.expenses));
     
     nameInput.value = '';
+    if (categoryInput) categoryInput.value = 'General';
     amountInput.value = '';
 
     this.updateBalances(); // Accurate update
@@ -227,13 +221,24 @@ class GlowBalance {
     if (!container) return;
     
     const total = this.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+    const filteredExpenses = this.expenses.filter(exp => 
+      exp.name.toLowerCase().includes(this.searchTerm) || 
+      exp.category.toLowerCase().includes(this.searchTerm)
+    );
 
-    container.innerHTML = this.expenses.length === 0 ? 
-      '<p style="text-align:center; color:#94a3b8; font-size:0.9rem;">No expenses yet.</p>' : 
-      `<div class="expense-total-header">
+    let content = '';
+    if (this.expenses.length === 0) {
+      content = '<p style="text-align:center; color:var(--color-text-muted); font-size:0.9rem; padding: 2rem;">No expenses yet. Add one above!</p>';
+    } else {
+      content = `<div class="expense-total-header">
         <span class="expense-total-label">Total Expenses</span>
         <span class="expense-total-value">$${total.toFixed(2)}</span>
       </div>`;
+      if (filteredExpenses.length === 0 && this.searchTerm) {
+        content += '<p style="text-align:center; color:var(--color-text-muted);">No expenses match your search.</p>';
+      }
+    }
+    container.innerHTML = content;
 
     this.expenses.forEach((exp, index) => {
       const matchesSearch = exp.name.toLowerCase().includes(this.searchTerm) || 
@@ -300,7 +305,7 @@ class GlowBalance {
             legend: {
               position: 'bottom',
               labels: {
-                color: getComputedStyle(document.documentElement).getPropertyValue('--color-text-secondary').trim(),
+                color: window.getComputedStyle(document.documentElement).getPropertyValue('--color-text-secondary').trim(),
                 padding: 20,
                 usePointStyle: true
               }
