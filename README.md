@@ -34,32 +34,6 @@ No sign-up. No complexity. Just good vibes and fair splits.
 - Travel buddies and event groups
 - Anyone tired of messy group payment calculations
 
-## Screenshots
-
-*(Add 4–6 real screenshots here — highly recommended)*
-
-**Dashboard & Balances**  
-![Balances View](https://via.placeholder.com/800x450/1e1b4b/00ffcc?text=Balances+Overview)
-
-**Add Expense Screen**  
-![Add Expense](https://via.placeholder.com/800x450/1e1b4b/ff00ff?text=Add+Expense+Form)
-
-**Insights & Charts**  
-![Insights Dashboard](https://via.placeholder.com/800x450/1e1b4b/00ffff?text=Spending+Insights)
-
-**Neon UI in Action**  
-![Neon Glow UI](https://via.placeholder.com/800x450/1e1b4b/ff00aa?text=Beautiful+Neon+Interface)
-
-> Replace the placeholder images with actual screenshots from your deployed app (light/neon mode recommended).
-
-## Tech Stack
-
-- **Frontend**: React + Vite
-- **Styling**: Tailwind CSS (with custom neon glow effects)
-- **Charts**: [Recharts / Chart.js — update with what you used]
-- **State Management**: [Zustand / Context API — update accordingly]
-- **Deployment**: Netlify
-
 ## Quick Start (Local Development)
 
 ```bash
