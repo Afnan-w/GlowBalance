@@ -34,13 +34,7 @@ No sign-up. No complexity. Just good vibes and fair splits.
 - Travel buddies and event groups
 - Anyone tired of messy group payment calculations
 
-## Quick Start (Local Development)
 
-```bash
-git clone https://github.com/Afnan-w/GlowBalance.git
-cd GlowBalance
-
-# Install dependencies
 npm install
 
 # Start development server
