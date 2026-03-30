@@ -35,7 +35,3 @@ No sign-up. No complexity. Just good vibes and fair splits.
 - Anyone tired of messy group payment calculations
 
 
-npm install
-
-# Start development server
-npm run dev
