@@ -4,7 +4,7 @@
 
 Bright neon UI, smart settlements, beautiful charts, and zero drama. Built for good vibes only.
 
-Live Demo: [https://glowbalance.netlify.app](https://glowbalance.netlify.app/)
+Live Demo: [https://glowbalance.netlify.app](https://glowbalancebd.netlify.app/)
 
 ---
 
